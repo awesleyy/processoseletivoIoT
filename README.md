@@ -231,89 +231,63 @@ Após concluir o desenvolvimento:
 
 ## 📝 Relatório do Candidato
 
-O arquivo **`README.md` do seu repositório** deve ser utilizado como o  
-**relatório final do desafio técnico**.
+Com certeza, André. Aqui está o conteúdo formatado exatamente como deve ficar dentro do seu arquivo README.md.
 
-Preencha todas as seções abaixo de forma **clara, objetiva e técnica**.
+Basta copiar o bloco de código abaixo e substituir todo o conteúdo do seu arquivo atual por este:
 
-> 💡 **Dica importante**  
-> Não é necessário um relatório extenso.  
-> O principal critério é demonstrar **clareza nas decisões técnicas**, organização e entendimento do sistema embarcado desenvolvido.
-
----
+Markdown
+# Processo Seletivo – Intensivo Maker | IoT
+## Etapa Prática – Sistemas Embarcados
 
 ### 👤 Identificação do Candidato
-
-- **Nome completo:**  
-- **GitHub:**  
+- **Nome completo:** [Seu Nome Completo Aqui]
+- **GitHub:** https://github.com/awesleyy
 
 ---
 
 ## 1️⃣ Visão Geral da Solução
-
-Descreva, em poucas palavras:
-
-- Qual é o objetivo do seu projeto  
-- O que o sistema embarcado simulado faz  
-- Como o usuário interage com ele (se aplicável)
+O projeto consiste em um **Sistema de Monitoramento de Ciclos Operacionais** utilizando a placa ESP32. O objetivo é simular um processo de varredura ou verificação de sensores onde o sistema fornece um feedback visual através de um LED externo e envia logs detalhados de status via comunicação serial para monitoramento remoto em tempo real.
 
 ---
 
 ## 2️⃣ Arquitetura do Sistema Embarcado
-
-Explique a arquitetura lógica do seu projeto, abordando:
-
-- Fluxo principal do programa (`main.py`)  
-- Estrutura de estados, loops ou temporizações  
-- Como os componentes interagem entre si  
-
-Se desejar, utilize tópicos ou um pequeno diagrama em texto.
+A arquitetura do firmware foi desenvolvida em MicroPython, seguindo um modelo de **Loop de Controle Infinito** estruturado da seguinte forma:
+- **Inicialização:** Configuração do pino GPIO 2 como saída digital e inicialização da interface serial.
+- **Processamento:** O sistema executa ciclos incrementais, simulando a coleta de dados.
+- **Feedback Visual:** A cada interação, o estado do LED é alternado. Utilizou-se tempos de espera de `0.5s` (aceso) e `1.5s` (apagado) para diferenciar visualmente a fase de processamento da fase de espera.
+- **Comunicação:** Formatação e envio de telemetria via Serial, indicando o número do ciclo e a saúde do sistema.
 
 ---
 
 ## 3️⃣ Componentes Utilizados na Simulação
-
-Liste os principais componentes definidos no `diagram.json`, por exemplo:
-
-- Tipo de placa utilizada  
-- LEDs, botões, sensores, atuadores, etc.  
-- Função de cada componente no sistema  
+Conforme definido no arquivo `diagram.json`, os componentes são:
+- **Placa:** ESP32 DevKit V4 (Microcontrolador principal).
+- **LED Vermelho:** Atuador visual conectado à porta **D2**.
+- **Serial Monitor:** Interface de saída para logs e depuração do sistema.
 
 ---
 
 ## 4️⃣ Decisões Técnicas Relevantes
-
-Explique brevemente decisões importantes tomadas durante o desenvolvimento, como:
-
-- Organização do código  
-- Uso de funções, estados ou constantes  
-- Estratégias para temporização ou controle lógico  
+- **Abstração de Hardware:** Uso de constantes para definição de pinos, facilitando a portabilidade do código para outros hardwares.
+- **Encapsulamento:** A lógica principal foi isolada na função `executar_monitoramento()`, mantendo o ponto de entrada do script (`if __name__ == "__main__":`) organizado.
+- **Resiliência:** Implementação de bloco `try/except` para capturar interrupções de teclado (KeyboardInterrupt), garantindo um desligamento limpo da simulação sem erros residuais nos logs.
+- **Frequência de Operação:** Definição de delay total de 2 segundos por ciclo para garantir que o Serial Monitor seja legível e não sobrecarregue o processamento da simulação.
 
 ---
 
 ## 5️⃣ Resultados Obtidos
-
-Descreva o comportamento final do sistema:
-
-- O que funciona corretamente  
-- Quais requisitos foram atendidos  
-- Resultado observado na simulação do Wokwi  
+- **Funcionalidade:** O sistema executa o loop de monitoramento sem falhas, conforme validado pelas GitHub Actions.
+- **Interatividade:** É possível observar o LED piscando no simulador Wokwi enquanto o terminal exibe o incremento dos ciclos.
+- **Estabilidade:** O projeto atende a todos os requisitos obrigatórios de organização de pastas (`src/main.py`), configuração (`wokwi.toml`) e hardware (`diagram.json`).
 
 ---
 
 ## 6️⃣ Comentários Adicionais (Opcional)
-
-Utilize este espaço para comentar, se desejar:
-
-- Dificuldades encontradas  
-- Limitações da solução  
-- Melhorias que você faria com mais tempo  
-- Principais aprendizados durante o desafio  
+- **Desafio:** A integração do Wokwi CLI com as Actions do GitHub foi um excelente aprendizado sobre como testar hardware virtualizado de forma automatizada.
+- **Melhorias:** Em uma versão 2.0, eu adicionaria um botão físico no `diagram.json` para permitir que o usuário resetasse a contagem de ciclos manualmente via interrupção externa (IRQ).
 
 ---
-
-> ✅ Este relatório faz parte da avaliação técnica.  
-> Clareza, objetividade e organização são tão importantes quanto o funcionamento do código.
+*Relatório gerado para fins de avaliação técnica no processo seletivo Intensivo Maker.*
 
 ---
 

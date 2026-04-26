@@ -240,7 +240,7 @@ Markdown
 ## Etapa Prática – Sistemas Embarcados
 
 ### 👤 Identificação do Candidato
-- **Nome completo:** [Seu Nome Completo Aqui]
+- **Nome completo:** André Wesley Barbosa Rodrigues Filho
 - **GitHub:** https://github.com/awesleyy
 
 ---

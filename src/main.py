@@ -1,3 +1,4 @@
+print("Teste")
 import machine
 import time
 

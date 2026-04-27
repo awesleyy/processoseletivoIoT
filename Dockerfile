@@ -17,10 +17,9 @@ RUN git clone https://github.com/earlephilhower/mklittlefs.git && \
   ./mklittlefs --version
 
 RUN cd mklittlefs && \
-  mkdir -p ~/fs && \
-  cp /main.py ~/fs/main.py && \
-  #  cp /boot.py ~/fs/boot.py && \
-  ./mklittlefs -c ~/fs -b 4096 -p 256 -s 0x200000 /fs.bin
+    mkdir -p /fs && \
+    cp /main.py /fs/main.py && \
+    ./mklittlefs -c /fs -b 4096 -p 256 -s 0x200000 /fs.bin
 
 
 CMD ["/bin/bash"]

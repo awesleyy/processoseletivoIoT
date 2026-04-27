@@ -1,15 +1,7 @@
 {
   "version": 1,
-  "author": "André Wesley",
+  "author": "Uri Shaked",
   "editor": "wokwi",
-  "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
-    { "type": "wokwi-led", "id": "led1", "top": -60, "left": 100, "attrs": { "color": "red" } }
-  ],
-  "connections": [
-    [ "esp:TX", "$serialMonitor:RX", "", [] ],
-    [ "esp:RX", "$serialMonitor:TX", "", [] ],
-    [ "esp:GND.1", "led1:C", "black", [ "v0" ] ],
-    [ "esp:D2", "led1:A", "red", [ "v0" ] ]
-  ]
+  "parts": [ { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} } ],
+  "connections": [ [ "esp:TX", "$serialMonitor:RX", "", [] ], [ "esp:RX", "$serialMonitor:TX", "", [] ] ]
 }

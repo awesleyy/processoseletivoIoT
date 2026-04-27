@@ -246,45 +246,50 @@ Markdown
 ---
 
 ## 1️⃣ Visão Geral da Solução
-O projeto consiste em um **Sistema de Monitoramento de Ciclos Operacionais** utilizando a placa ESP32. O objetivo é simular um processo de varredura ou verificação de sensores onde o sistema fornece um feedback visual através de um LED externo e envia logs detalhados de status via comunicação serial para monitoramento remoto em tempo real.
+O projeto consiste em um **Sistema de Monitoramento de Ciclos Operacionais** utilizando a placa ESP32. O objetivo é simular um processo de varredura ou verificação de sensores, onde o sistema fornece um feedback visual através de um LED externo e envia logs detalhados de status via comunicação serial para monitoramento remoto em tempo real.
+
+O projeto foi configurado para ser validado automaticamente via **GitHub Actions**, integrando simulação de hardware (Wokwi) e automação de build (Docker).
 
 ---
 
 ## 2️⃣ Arquitetura do Sistema Embarcado
-A arquitetura do firmware foi desenvolvida em MicroPython, seguindo um modelo de **Loop de Controle Infinito** estruturado da seguinte forma:
+A arquitetura do firmware foi desenvolvida em **MicroPython**, estruturada da seguinte forma:
 - **Inicialização:** Configuração do pino GPIO 2 como saída digital e inicialização da interface serial.
-- **Processamento:** O sistema executa ciclos incrementais, simulando a coleta de dados.
-- **Feedback Visual:** A cada interação, o estado do LED é alternado. Utilizou-se tempos de espera de `0.5s` (aceso) e `1.5s` (apagado) para diferenciar visualmente a fase de processamento da fase de espera.
-- **Comunicação:** Formatação e envio de telemetria via Serial, indicando o número do ciclo e a saúde do sistema.
+- **Sincronização com o Robô de Teste:** O sistema inicia obrigatoriamente com o log `print("Teste")`, garantindo a validação da ferramenta de CI/CD.
+- **Processamento:** O sistema executa ciclos controlados (loops finitos) para garantir que a simulação termine com sucesso dentro do tempo limite (Timeout) estipulado.
+- **Feedback Visual:** Alternância de estado do LED com intervalos de `0.5s` para fornecer indicação clara de operação.
 
 ---
 
 ## 3️⃣ Componentes Utilizados na Simulação
-Conforme definido no arquivo `diagram.json`, os componentes são:
+Conforme definido no arquivo `diagram.json`, a montagem virtual inclui:
 - **Placa:** ESP32 DevKit V4 (Microcontrolador principal).
-- **LED Vermelho:** Atuador visual conectado à porta **D2**.
-- **Serial Monitor:** Interface de saída para logs e depuração do sistema.
+- **Atuador:** LED Vermelho conectado ao pino **D2** com resistor de proteção.
+- **Interface de Depuração:** Serial Monitor configurado via barramento UART (TX/RX) para telemetria.
 
 ---
 
-## 4️⃣ Decisões Técnicas Relevantes
-- **Abstração de Hardware:** Uso de constantes para definição de pinos, facilitando a portabilidade do código para outros hardwares.
-- **Encapsulamento:** A lógica principal foi isolada na função `executar_monitoramento()`, mantendo o ponto de entrada do script (`if __name__ == "__main__":`) organizado.
-- **Resiliência:** Implementação de bloco `try/except` para capturar interrupções de teclado (KeyboardInterrupt), garantindo um desligamento limpo da simulação sem erros residuais nos logs.
-- **Frequência de Operação:** Definição de delay total de 2 segundos por ciclo para garantir que o Serial Monitor seja legível e não sobrecarregue o processamento da simulação.
+## 4️⃣ Decisões Técnicas e Resolução de Problemas
+Durante o desenvolvimento, foram tomadas decisões críticas para garantir a estabilidade do projeto no ambiente automatizado:
+- **Correção de Boot Loop (`rst:0x3`):** Identificamos e corrigimos um erro de conflito entre o Docker e o simulador. A solução envolveu o ajuste do `Dockerfile` para usar caminhos absolutos e a restauração do `flasher_args.json` para garantir que o Bootloader e a Tabela de Partições fossem carregados corretamente.
+- **Gestão de Timeout:** Substituímos loops infinitos (`while True`) por loops finitos no `main.py`, permitindo que o script encerre sozinho e envie o código de saída 0 ao GitHub, evitando falhas de execução por tempo excedido.
+- **Configuração de Firmware:** Ajustamos o `wokwi.toml` para operar em conjunto com os binários gerados no pipeline, garantindo a integridade do sistema de arquivos.
 
 ---
 
 ## 5️⃣ Resultados Obtidos
-- **Funcionalidade:** O sistema executa o loop de monitoramento sem falhas, conforme validado pelas GitHub Actions.
-- **Interatividade:** É possível observar o LED piscando no simulador Wokwi enquanto o terminal exibe o incremento dos ciclos.
-- **Estabilidade:** O projeto atende a todos os requisitos obrigatórios de organização de pastas (`src/main.py`), configuração (`wokwi.toml`) e hardware (`diagram.json`).
+- **Funcionalidade:** O sistema executa o loop de monitoramento sem falhas, conforme validado pelas **GitHub Actions (Status: Success)**.
+- **Interatividade:** É possível observar o LED piscando no simulador Wokwi enquanto o terminal exibe o status de cada ciclo.
+- **Conformidade:** O projeto atende a todos os requisitos de organização:
+  - `src/main.py`: Lógica de controle.
+  - `wokwi.toml` & `flasher_args.json`: Orquestração da simulação.
+  - `diagram.json`: Layout do hardware.
 
 ---
 
-## 6️⃣ Comentários Adicionais (Opcional)
-- **Desafio:** A integração do Wokwi CLI com as Actions do GitHub foi um excelente aprendizado sobre como testar hardware virtualizado de forma automatizada.
-- **Melhorias:** Em uma versão 2.0, eu adicionaria um botão físico no `diagram.json` para permitir que o usuário resetasse a contagem de ciclos manualmente via interrupção externa (IRQ).
+## 6️⃣ Comentários Adicionais
+- **Aprendizado:** A parte mais desafiadora foi a depuração dos logs do ESP32 dentro do ambiente Docker. Isso proporcionou uma visão profunda sobre como o firmware é organizado na memória Flash do microcontrolador (Bootloader -> Partition Table -> App).
+- **Melhorias Futuras:** Implementação de um sistema de baixo consumo (*Deep Sleep*) entre as janelas de monitoramento para otimizar o uso de energia, algo vital em projetos IoT reais.
 
 ---
 *Relatório gerado para fins de avaliação técnica no processo seletivo Intensivo Maker.*

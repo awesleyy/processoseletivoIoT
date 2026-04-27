@@ -1,3 +1,5 @@
+print("Teste")
+
 from machine import Pin
 import time
 
